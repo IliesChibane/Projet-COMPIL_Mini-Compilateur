@@ -12,13 +12,14 @@ loc {lettres}|{chiffres}
 idf {lettres}({loc}|_?{loc})*
 idf_v "$"{idf}
 chiffres1 [1-9]
-idf_tab "@"{idf}
-nombre {chiffres}+
-commentaire ##({lettres}|{chiffres}|[ \n\t]|#)*## 
-espace " "
+idf_tab "@"{idf}"["{chiffres1}"]"
+nombre {chiffres}+|"("[-]{chiffres1}{chiffres}*")"
+/*nombre {chiffres}+*/
+commentaire ##([^#]+|(#[^#]+)+)*##
+/*fSigne (\"%[dfs]\")*/
 
 %%
-"import" { nb_colonnes =nb_colonnes+ yyleng; return mc_import; }
+"Import" { nb_colonnes =nb_colonnes+ yyleng; return mc_import; }
 "ISIL.io" { nb_colonnes = nb_colonnes+ yyleng; return bib_io;}
 "ISIL.lang" { nb_colonnes =nb_colonnes+ yyleng;return bib_lang;}
 "public" { nb_colonnes =nb_colonnes+ yyleng;return mc_public;}
@@ -28,17 +29,15 @@ espace " "
 "Entier" { nb_colonnes =nb_colonnes+ yyleng;return mc_entier;}
 "Reel" { nb_colonnes =nb_colonnes+ yyleng;return mc_reel;}
 "Chaine" { nb_colonnes =nb_colonnes+ yyleng;return mc_chaine;}
-"Const" { nb_colonnes =nb_colonnes+ yyleng;return mc_const;}
+"CONST" { nb_colonnes =nb_colonnes+ yyleng;return mc_const;}
 "For" { nb_colonnes =nb_colonnes+ yyleng;return mc_for;}
 "In" { nb_colonnes =nb_colonnes+ yyleng;return mc_In;}
 "Out" { nb_colonnes =nb_colonnes+ yyleng;return mc_Out;}
-{idf_v} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur trop long \n"); }nb_colonnes =nb_colonnes+ yyleng; return idf_v; }
-{idf_tab} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur trop long \n"); }nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
+{idf_v} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur a la ligne %d et position %d a une taille de %d , ceci est trop long \n",nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng; return idf_v; }
+{idf_tab} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur a la ligne %d et position %d a une taille de %d , ceci est trop long \n",nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
 {nombre} { nb_colonnes =nb_colonnes+ yyleng;return nb;}
 {commentaire}
-"\"" { nb_colonnes =nb_colonnes+ yyleng;return g;    }
-"[" { nb_colonnes =nb_colonnes+ yyleng;return cr_ov;}
-"]" { nb_colonnes =nb_colonnes+ yyleng;return cr_fm;}
+"\"" { nb_colonnes =nb_colonnes+ yyleng;return g;}
 "," { nb_colonnes =nb_colonnes+ yyleng;return vrg;}
 "{" { nb_colonnes =nb_colonnes+ yyleng;return aco_ov;}
 "}" { nb_colonnes =nb_colonnes+ yyleng;return aco_fr;}
@@ -61,5 +60,3 @@ espace " "
 [\n] { nb_ligne++;  nb_colonnes=1;}
 . {printf("Erreur lexicale a ligne %d et la colonne %d sur l'entite %s\n",nb_ligne,nb_colonnes,yytext);
    return err;  }
-
-
