@@ -105,7 +105,7 @@
      mc_private = 264,
      mc_protected = 265,
      mc_class = 266,
-     idf = 267,
+     idf_v = 267,
      aco_ov = 268,
      aco_fr = 269,
      mc_entier = 270,
@@ -461,13 +461,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,     9,     9,    12,    13,    15,    17,    18,    21,    23,
-      24,    25,    26,    28,    30,    31,    33,    34,    35,    37,
-      39,    40,    42,    44,    45,    47,    49,    50,    53,    54,
-      55,    58,    59,    61,    62,    63,    64,    67,    69,    70,
-      71,    73,    75,    77,    79,    81,    82,    83,    84,    86,
-      88,    90,    91,    94,    95,    98,    99,   100,   103,   104,
-     105,   106
+       0,     7,     7,    10,    11,    13,    15,    16,    19,    21,
+      22,    23,    24,    26,    28,    29,    31,    32,    33,    35,
+      37,    38,    40,    42,    43,    45,    47,    48,    51,    52,
+      53,    56,    57,    59,    60,    61,    62,    65,    67,    68,
+      69,    71,    73,    75,    77,    79,    80,    81,    82,    84,
+      86,    88,    89,    92,    93,    96,    97,    98,   101,   102,
+     103,   104
 };
 #endif
 
@@ -477,7 +477,7 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "mc_import", "pvg", "bib_io", "bib_lang",
-  "err", "mc_public", "mc_private", "mc_protected", "mc_class", "idf",
+  "err", "mc_public", "mc_private", "mc_protected", "mc_class", "idf_v",
   "aco_ov", "aco_fr", "mc_entier", "mc_reel", "mc_chaine", "mc_const",
   "vrg", "idf_tab", "cr_ov", "cr_fm", "pls", "mns", "mlt", "divise", "nb",
   "p_ou", "p_fr", "aft", "mc_for", "sup", "inf", "supe", "infe", "mc_In",
@@ -1450,7 +1450,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 9 "synt.y"
+#line 7 "synt.y"
     {printf("Programme syntaxiquement correct"); 
                YYACCEPT;        ;}
     break;
@@ -1670,7 +1670,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 110 "synt.y"
+#line 108 "synt.y"
 
 main()
 {yyparse();}

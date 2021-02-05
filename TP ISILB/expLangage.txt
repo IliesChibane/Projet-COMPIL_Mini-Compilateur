@@ -1,13 +1,13 @@
 import ISIL.lang;
 import ISIL.io;
-public class $ISIL_B {
+public class $ISIL_Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb {
 Entier $x,$z,$a;
 Reel $y;
 Entier @tab[5],@tab2[3];
 Const Entier $p;
 $x := 5;
 $z := $x+7;
-t :=1; 
+
 ## ceci est un # commentaire ##
 For($x:=0;$x<10;$x++)
 {

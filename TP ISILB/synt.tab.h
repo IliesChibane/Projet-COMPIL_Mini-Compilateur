@@ -48,7 +48,7 @@
      mc_private = 264,
      mc_protected = 265,
      mc_class = 266,
-     idf = 267,
+     idf_v = 267,
      aco_ov = 268,
      aco_fr = 269,
      mc_entier = 270,

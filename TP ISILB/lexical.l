@@ -8,13 +8,14 @@ lettreMin [a-z]
 lettreMax [A-Z]
 lettres {lettreMin}|{lettreMax}
 chiffres [0-9]
-/*chiffres1 [1-9]*/
-idf "$"{lettres}({lettres}|{chiffres}|_)*
-idf_tab "@"{lettres}({lettres}|{chiffres}|_)*
-idf_const "$"{lettres}({lettres}|{chiffres}|_)*
+loc {lettres}|{chiffres}
+idf {lettres}({loc}|_?{loc})*
+idf_v "$"{idf}
+chiffres1 [1-9]
+idf_tab "@"{idf}
 nombre {chiffres}+
 commentaire ##({lettres}|{chiffres}|[ \n\t]|#)*## 
-/*espace " "*/
+espace " "
 
 %%
 "import" { nb_colonnes =nb_colonnes+ yyleng; return mc_import; }
@@ -31,8 +32,8 @@ commentaire ##({lettres}|{chiffres}|[ \n\t]|#)*##
 "For" { nb_colonnes =nb_colonnes+ yyleng;return mc_for;}
 "In" { nb_colonnes =nb_colonnes+ yyleng;return mc_In;}
 "Out" { nb_colonnes =nb_colonnes+ yyleng;return mc_Out;}
-{idf} { nb_colonnes =nb_colonnes+ yyleng;return idf; }
-{idf_tab} { nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
+{idf_v} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur trop long \n"); }nb_colonnes =nb_colonnes+ yyleng; return idf_v; }
+{idf_tab} { if(yyleng > 25) { printf("\nErreur lexicale: Identificateur trop long \n"); }nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
 {nombre} { nb_colonnes =nb_colonnes+ yyleng;return nb;}
 {commentaire}
 "\"" { nb_colonnes =nb_colonnes+ yyleng;return g;    }
