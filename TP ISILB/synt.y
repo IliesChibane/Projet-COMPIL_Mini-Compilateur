@@ -6,7 +6,7 @@
 
 
 %%
-S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("pgm syntaxiquement correcte"); 
+S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correcte"); 
                YYACCEPT;        }
 ;
 
@@ -65,8 +65,6 @@ SDF: sfi
 ; 
 Ecriture: mc_Out p_ou g SDF g vrg idf p_fr pvg
 ;
-COMMENT: commentaire text
-; 
 BOUCLE: mc_for p_ou init condition incre p_fr BC 
 ;
 init: idf aft Expression pvg

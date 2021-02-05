@@ -1,5 +1,6 @@
 %{
 #include "synt.tab.h"
+#include "stdio.h"
 int nb_ligne=1;
 %}
 lettreMin [a-z]
@@ -32,7 +33,6 @@ Out return mc_Out;
 {nombre} return nb;
 {text} return text;
 "\"" return g;
-"##" return commentaire;
 "[" return cr_ov;
 "]" return cr_fm;
 "," return vrg;
@@ -58,3 +58,5 @@ Out return mc_Out;
 [\n] nb_ligne++;
 . {printf("erreur lexicale a ligne %d sur l'entite %s\n",nb_ligne,yytext);
    return err;  }
+
+
