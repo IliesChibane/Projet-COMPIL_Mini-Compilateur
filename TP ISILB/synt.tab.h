@@ -70,17 +70,14 @@
      mc_for = 286,
      sup = 287,
      inf = 288,
-     equal = 289,
-     supe = 290,
-     infe = 291,
-     mc_In = 292,
-     g = 293,
-     sfi = 294,
-     sfr = 295,
-     sfs = 296,
-     mc_Out = 297,
-     text = 298,
-     commentaire = 299
+     supe = 289,
+     infe = 290,
+     mc_In = 291,
+     g = 292,
+     sfi = 293,
+     sfr = 294,
+     sfs = 295,
+     mc_Out = 296
    };
 #endif
 

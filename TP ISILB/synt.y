@@ -1,21 +1,28 @@
 %token mc_import pvg bib_io bib_lang err mc_public 
        mc_private mc_protected mc_class idf aco_ov aco_fr
 	   mc_entier mc_reel mc_chaine mc_const vrg idf_tab cr_ov cr_fm
-	   pls mns mlt divise nb p_ou p_fr aft mc_for sup inf equal supe infe 
-	   mc_In g sfi sfr sfs mc_Out text commentaire
-
-
+	   pls mns mlt divise nb p_ou p_fr aft mc_for sup inf supe infe  
+	   mc_In g sfi sfr sfs mc_Out
 %%
-S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correcte"); 
+S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
 ;
+LISTE_BIB: BIB LISTE_BIB
+          |
+;		  
+BIB: mc_import NOM_BIB pvg
+;
+NOM_BIB: bib_io
+         |bib_lang
+;
 
-HEADER_CLASS:MODIFICATEUR mc_class idf
+HEADER_CLASS: MODIFICATEUR mc_class idf
 ;
 MODIFICATEUR: mc_public
-             |mc_private
-			 |mc_protected
-			 ;
+              |mc_private
+		    |mc_protected
+              |
+; 
 CORPS:LISTE_DEC LISTE_INST
 ;
 LISTE_DEC: DEC LISTE_DEC
@@ -40,14 +47,12 @@ DEC_CONST: mc_const TYPE LISTE_IDF_CONST pvg
 LISTE_IDF_CONST: idf vrg LISTE_IDF_CONST
                 |idf
 ;
-
 	  
 TYPE:mc_entier
     |mc_reel
 	|mc_chaine
 ;	
-			 
-			 
+			 			 
 LISTE_INST: INST LISTE_INST
 ;           |
 
@@ -71,8 +76,10 @@ init: idf aft Expression pvg
 ;
 condition:idf logique IDF_NB pvg
 ;
-logique: sup
+logique:   sup
 		 |inf
+           |supe
+           |infe
 ;
 incre: idf pls pls 
 ;
@@ -97,14 +104,7 @@ OPR: pls
      |mns
 ;
 
-LISTE_BIB: BIB LISTE_BIB
-          |
-;		  
-BIB: mc_import NOM_BIB pvg
-;
-NOM_BIB:bib_io
-         |bib_lang
-;		  
+		  
 %%
 main()
 {yyparse();}

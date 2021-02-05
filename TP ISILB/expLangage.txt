@@ -7,7 +7,9 @@ Entier @tab[5],@tab2[3];
 Const Entier $p;
 $x := 5;
 $z := $x+7;
-Forr($x:=0;$x<10;$x++)
+t :=1; 
+## ceci est un # commentaire ##
+For($x:=0;$x<10;$x++)
 {
 	$z := 1;
 }
