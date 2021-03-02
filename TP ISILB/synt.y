@@ -1,8 +1,19 @@
+%{
+int nb_ligne = 1;
+int nb_colonnes = 1;
+char sauvType[20];
+%}
+%union{
+     int entier;
+     char* chaine; 
+}
+
+%type <chaine> Idf_tab tabID
 %token mc_import pvg bib_io bib_lang err mc_public 
-       mc_private mc_protected mc_class idf_v aco_ov aco_fr
-	   mc_entier mc_reel mc_chaine mc_const vrg idf_tab
-	   pls mns mlt divise nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g sfi sfr sfs mc_Out
+       mc_private mc_protected mc_class <chaine>idf_v aco_ov aco_fr
+	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
+	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
+	   mc_In g sfi sfr sfs mc_Out br_ov br_fr
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -35,17 +46,37 @@ DEC_CONST: mc_const DEC_VAR
 ;			  
 DEC_VAR: TYPE LISTE_IDF pvg
 ;
-TYPE: mc_entier
-      |mc_reel
-	 |mc_chaine
+TYPE: mc_entier {strcpy(sauvType,$1);}
+      |mc_reel {strcpy(sauvType,$1);}
+	 |mc_chaine {strcpy(sauvType,$1);}
 ;
-LISTE_IDF: idf_v vrg LISTE_IDF
-          |idf_v
+LISTE_IDF: idf_v vrg LISTE_IDF { if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n", $1, nb_ligne, nb_colonnes);
+					      }
+          |idf_v { if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
 ;	
 DEC_TAB: TYPE LISTE_IDF_TAB pvg
 ;
-LISTE_IDF_TAB: idf_tab vrg LISTE_IDF_TAB
-              |idf_tab
+Idf_tab: idf_tab br_ov nb br_fr{ if($3 < 0)
+                                     printf("Erreur Semantique, la taille de tableau %s doit etre positive a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);              
+}
+         |idf_tab br_ov tabID br_fr
+;
+tabID: Idf_tab
+       |idf_v
+;
+LISTE_IDF_TAB: Idf_tab vrg LISTE_IDF_TAB { if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+              |Idf_tab { if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
 ;			 			 
 LISTE_INST: INST LISTE_INST
            |
@@ -55,14 +86,17 @@ INST: Affectation
       |Lecture
       |Ecriture
 ;
-Affectation: idf_v aft Expression pvg
-		   | idf_tab aft  Expression pvg
+Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
+                                          printf("Erreur semantique, %s non declaree a la ligne %d , position %d\n",$1,nb_ligne, nb_colonnes);
+					      }
 ;
-Expression: IDF_NB OPR Expression 
+Expression: IDF_NB OPR Expression
             |IDF_NB
+            |IDF_NB divise nb{ if($3 == 0)
+                               printf("Erreur semantique, DIVISION PAR ZERO a la ligne %d , position %d\n", nb_ligne, nb_colonnes);}
 ;
 IDF_NB: IDF_NBB
-        |idf_tab
+        |Idf_tab
 
 ;
 IDF_NBB: idf_v
@@ -70,7 +104,6 @@ IDF_NBB: idf_v
 ; 
 OPR: pls
      |mlt
-     |divise
      |mns
 ;
 BOUCLE: mc_for p_ou init pvg condition pvg incre p_fr BC 
@@ -86,7 +119,7 @@ logique:   sup
 ;
 incre: idf_v pls pls 
 ;      
-BC: aco_ov INST aco_fr
+BC: aco_ov LISTE_INST aco_fr
 ;
 Lecture: mc_In p_ou g SDF g vrg idf_v p_fr pvg
 ;
@@ -96,10 +129,13 @@ SDF: sfi
      |sfr
      |sfs
 ; 	
-
 %%
 main()
 {
      yyparse();
+     afficher();
 }
 yywrap() {}
+yyerror(char* msg){
+     printf("Erreur Syntaxique: La ligne %d , position %d \n ",nb_ligne,nb_colonnes);
+}
