@@ -706,12 +706,12 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 27 "lexical.l"
-{yylval.chaine=strdup(yytext); nb_colonnes = nb_colonnes+ yyleng; return bib_io;}
+{ inserer(yytext,"ISIL.io"); yylval.chaine=strdup(yytext); nb_colonnes = nb_colonnes+ yyleng; return bib_io;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 28 "lexical.l"
-{yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return bib_lang;}
+{ inserer(yytext,"ISIL.lang"); yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return bib_lang;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -828,7 +828,7 @@ YY_RULE_SETUP
 case 25:
 YY_RULE_SETUP
 #line 57 "lexical.l"
-{  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return p_ou;}
+{  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return p_ou;}   
 	YY_BREAK
 case 26:
 YY_RULE_SETUP

@@ -24,8 +24,8 @@ commentaire ##([^#]+|(#[^#]+)+)*##
 
 %%
 "Import" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng; return mc_import; }
-"ISIL.io" {yylval.chaine=strdup(yytext); nb_colonnes = nb_colonnes+ yyleng; return bib_io;}
-"ISIL.lang" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return bib_lang;}
+"ISIL.io" { inserer(yytext,"ISIL.io"); yylval.chaine=strdup(yytext); nb_colonnes = nb_colonnes+ yyleng; return bib_io;}
+"ISIL.lang" { inserer(yytext,"ISIL.lang"); yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return bib_lang;}
 "public" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return mc_public;}
 "private" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return mc_private;}
 "protected" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return mc_protected;}

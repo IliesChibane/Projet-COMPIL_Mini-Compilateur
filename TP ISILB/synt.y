@@ -7,13 +7,12 @@ char sauvType[20];
      int entier;
      char* chaine; 
 }
-
-%type <chaine> Idf_tab tabID
-%token mc_import pvg bib_io bib_lang err mc_public 
-       mc_private mc_protected mc_class <chaine>idf_v aco_ov aco_fr
+%type <chaine> Idf_tab tabID NOM_BIB MODIFICATEUR
+%token <chaine>mc_import pvg <chaine>bib_io <chaine>bib_lang err <chaine>mc_public 
+       <chaine>mc_private <chaine>mc_protected <chaine>mc_class <chaine>idf_v aco_ov aco_fr
 	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
 	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g sfi sfr sfs mc_Out br_ov br_fr
+	   mc_In g sfi sfr sfs mc_Out br_ov br_fr 
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -21,12 +20,18 @@ S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement c
 LISTE_BIB: BIB LISTE_BIB
           |
 ;		  
-BIB: mc_import NOM_BIB pvg
+BIB: mc_import NOM_BIB pvg { if(doubleDeclaration($2)==0)
+                                     insererTYPE($2,"BIB");
+							    else printf("Erreur Semantique: double declaration de la bibliotheque %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
 ;
 NOM_BIB: bib_io
          |bib_lang
 ;
-HEADER_CLASS: MODIFICATEUR mc_class idf_v
+HEADER_CLASS: MODIFICATEUR mc_class idf_v{ if(doubleDeclaration($3)==0)
+                                     insererTYPE($3,"Classe");
+							    else printf("Erreur Semantique: double declaration  de la classe %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
 ;
 MODIFICATEUR: mc_public
               |mc_private
@@ -73,7 +78,7 @@ LISTE_IDF_TAB: Idf_tab vrg LISTE_IDF_TAB { if(doubleDeclaration($1)==0)
                                      insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
-              |Idf_tab { if(doubleDeclaration($1)==0)
+               |Idf_tab { if(doubleDeclaration($1)==0)
                                      insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
