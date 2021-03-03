@@ -105,9 +105,9 @@ DEC_TAB: TYPE LISTE_IDF_TAB pvg
 Idf_tab: idf_tab br_ov nb br_fr{ if($3 < 0)
                                      printf("Erreur Semantique, la taille de tableau %s doit etre positive a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);              
 }
-         |idf_tab br_ov tabID br_fr
+                                 |idf_tab br_ov tabID br_fr
 ;
-tabID: Idf_tab
+tabID: Idf_tab 
        |idf_v
 ;
 LISTE_IDF_TAB: Idf_tab vrg LISTE_IDF_TAB { if(doubleDeclaration($1)==0)
@@ -128,21 +128,24 @@ INST: Affectation
       |Ecriture
 ;
 Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
-                                          printf("Erreur semantique, %s non declaree a la ligne %d , position %d\n",$1,nb_ligne, nb_colonnes);
+                                          printf("Erreur semantique, %s non declaree a la ligne %d , position %d\n",$1,nb_ligne, nb_colonnes);     
+                                        if(verifierConstante($1)==-1)
+                                          printf("Erreur semantique, vous ne pouvez pas affecter une deuxime valeur a la constante de la ligne %d , position %d\n", nb_ligne, nb_colonnes);                                     
 					      }
 ;
 Expression: IDF_NB OPR Expression
             |IDF_NB
-            |IDF_NB divise nb{ if($3 == 0)
-                               printf("Erreur semantique, DIVISION PAR ZERO a la ligne %d , position %d\n", nb_ligne, nb_colonnes);}
+            |IDF_NB divise nb
 ;
 IDF_NB: IDF_NBB
         |Idf_tab
 
 ;
-IDF_NBB: idf_v
+IDF_NBB: idf_v{      
+           }
          |nb
          |reel
+         |chaine
 ; 
 OPR: pls
      |mlt

@@ -82,9 +82,15 @@
 
 
 	int verifierConstante(char entite[]){
-         
+         int pos;
+	     pos = recherche(entite);
+		 if(strcmp(ts[pos].Constante,"oui") == 0){
+            if(strcmp(ts[pos].valeur," ") != 0){
+                   return -1;
+			}
+		 }
+			return 0;
 	}
-
 
 	int verifierType(char format[], char entite[]){
 		int pos;
