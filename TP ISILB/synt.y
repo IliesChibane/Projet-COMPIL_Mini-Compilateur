@@ -12,7 +12,7 @@ char sauvType[20];
        <chaine>mc_private <chaine>mc_protected <chaine>mc_class <chaine>idf_v aco_ov aco_fr
 	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
 	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g sfi sfr sfs mc_Out br_ov br_fr chaine
+	   mc_In g sfi sfr sfs mc_Out br_ov br_fr chaine reel
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -49,13 +49,26 @@ DEC: DEC_VAR
 ;
 DEC_CONST: mc_const TYPE LISTE_CONST pvg
 ;			
-LISTE_CONST: idf_v vrg LISTE_CONST
-             |idf_v
-             |idf_v aft VAL
-             |idf_v aft VAL vrg LISTE_CONST
+LISTE_CONST: idf_v vrg LISTE_CONST{ if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+             |idf_v{ if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+             |idf_v aft VAL{ if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+             |idf_v aft VAL vrg LISTE_CONST{ if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
 ;
 VAL: nb
-     |letters
+     |chaine
+     |reel
 ;
 DEC_VAR: TYPE LISTE_IDF pvg
 ;
@@ -68,6 +81,14 @@ LISTE_IDF: idf_v vrg LISTE_IDF { if(doubleDeclaration($1)==0)
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n", $1, nb_ligne, nb_colonnes);
 					      }
           |idf_v { if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+          |idf_v aft VAL vrg LISTE_IDF{ if(doubleDeclaration($1)==0)
+                                     insererTYPE($1,sauvType);
+							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+          |idf_v aft VAL{ if(doubleDeclaration($1)==0)
                                      insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
@@ -114,6 +135,7 @@ IDF_NB: IDF_NBB
 ;
 IDF_NBB: idf_v
          |nb
+         |reel
 ; 
 OPR: pls
      |mlt
