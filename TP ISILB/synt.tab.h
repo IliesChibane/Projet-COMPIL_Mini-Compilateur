@@ -77,7 +77,8 @@
      sfs = 293,
      mc_Out = 294,
      br_ov = 295,
-     br_fr = 296
+     br_fr = 296,
+     letters = 297
    };
 #endif
 
@@ -96,7 +97,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 100 "synt.tab.h"
+#line 101 "synt.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -15,10 +15,14 @@ chiffres [0-9]
 loc {lettres}|{chiffres}
 idf {lettres}({loc}|_?{loc})*
 idf_v "$"{idf}
+chaine /".*/"
+
 chiffres1 [1-9]
 idf_tab "@"{idf}
-nombre {chiffres}+|"("?[-]{chiffres1}{chiffres}*")"?
+nombre {chiffres1}+|"("?[-]{chiffres1}{chiffres}*")"?
+nombrepos {chiffres1}+|{chiffres1}{chiffres}*
 /*nombre {chiffres}+*/
+reel {nombre}"."{nombrepos}
 commentaire ##([^#]+|(#[^#]+)+)*##
 /*fSigne (\"%[dfs]\")*/
 
@@ -39,6 +43,7 @@ commentaire ##([^#]+|(#[^#]+)+)*##
 "Out" {yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return mc_Out;}
 {idf_v} {inserer(yytext,"idf_v"); yylval.chaine=strdup(yytext); if(yyleng > 25) { printf("\nErreur lexicale: Identificateur %s a la ligne %d et position %d a une taille de %d , ceci est trop long \n",yytext,nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng; return idf_v; }
 {idf_tab} {inserer(yytext,"idf_tab"); yylval.chaine=strdup(yytext); if(yyleng > 25) { printf("\nErreur lexicale: Identificateur %s a la ligne %d et position %d a une taille de %d , ceci est trop long \n",yytext, nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
+{chaine} { nb_colonnes =nb_colonnes+ yyleng;return chaine;}
 {nombre} { 
    if(yytext[0]!='(')
       yylval.entier = atoi(yytext); 

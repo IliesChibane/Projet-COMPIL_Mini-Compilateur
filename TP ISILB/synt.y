@@ -12,7 +12,7 @@ char sauvType[20];
        <chaine>mc_private <chaine>mc_protected <chaine>mc_class <chaine>idf_v aco_ov aco_fr
 	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
 	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g sfi sfr sfs mc_Out br_ov br_fr 
+	   mc_In g sfi sfr sfs mc_Out br_ov br_fr chaine
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -47,8 +47,16 @@ DEC: DEC_VAR
      |DEC_TAB
      |DEC_CONST
 ;
-DEC_CONST: mc_const DEC_VAR
-;			  
+DEC_CONST: mc_const TYPE LISTE_CONST pvg
+;			
+LISTE_CONST: idf_v vrg LISTE_CONST
+             |idf_v
+             |idf_v aft VAL
+             |idf_v aft VAL vrg LISTE_CONST
+;
+VAL: nb
+     |letters
+;
 DEC_VAR: TYPE LISTE_IDF pvg
 ;
 TYPE: mc_entier {strcpy(sauvType,$1);}

@@ -6,6 +6,7 @@
 		char NomEntite[20];
 		char CodeEntite[20];
 		char TypeEntite[20];
+		char Constante[20];
 		} TypeTS;
 		//Initialisation de la structure
         TypeTS ts[100]; 
@@ -21,7 +22,6 @@
 		if (strcmp(entite,ts[i].NomEntite)==0) return i;
 		i++;
 		}
-
 		return -1;
 		}
 		
@@ -33,20 +33,21 @@
 	{
 	strcpy(ts[CompteurTS].NomEntite,entite); 
 	strcpy(ts[CompteurTS].CodeEntite,code);
+	strcpy(ts[CompteurTS].Constante,"non");
 	CompteurTS++;
 	}
 	}
   //Definir la fonction affichage
 	  void afficher ()
 	{
-	printf("\n/***************Table des symboles ******************/\n");
-	printf("_____________________________________________________\n");
-	printf("\t| NomEntite |  CodeEntite | TyepEntite\n");
-	printf("_____________________________________________________\n");
+	printf("\n/************************Table des symboles************************/\n");
+	printf("______________________________________________________________________\n");
+	printf("\t| NomEntite |  CodeEntite | TyepEntite  | Constante \n");
+	printf("______________________________________________________________________\n");
 	int i=0;
 	  while(i<CompteurTS)
 	  {
-		printf("\t|%10s |%12s | %12s\n",ts[i].NomEntite,ts[i].CodeEntite,ts[i].TypeEntite);
+		printf("\t|%10s |%12s | %12s | %12s\n",ts[i].NomEntite,ts[i].CodeEntite,ts[i].TypeEntite, ts[i].Constante);
 		 i++;
 	   }
 	}
