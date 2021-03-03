@@ -2,17 +2,18 @@
 int nb_ligne = 1;
 int nb_colonnes = 1;
 char sauvType[20];
+char tempVal[20];
 %}
 %union{
      int entier;
      char* chaine; 
 }
-%type <chaine> Idf_tab tabID NOM_BIB MODIFICATEUR
+%type <chaine> Idf_tab tabID NOM_BIB MODIFICATEUR VAL
 %token <chaine>mc_import pvg <chaine>bib_io <chaine>bib_lang err <chaine>mc_public 
        <chaine>mc_private <chaine>mc_protected <chaine>mc_class <chaine>idf_v aco_ov aco_fr
 	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
 	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g sfi sfr sfs mc_Out br_ov br_fr chaine reel
+	   mc_In g    mc_Out br_ov br_fr chaine reel
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -49,21 +50,27 @@ DEC: DEC_VAR
 ;
 DEC_CONST: mc_const TYPE LISTE_CONST pvg
 ;			
-LISTE_CONST: idf_v vrg LISTE_CONST{ if(doubleDeclaration($1)==0)
+LISTE_CONST: idf_v vrg LISTE_CONST{  insererConstante($1,""); 
+                                     if(doubleDeclaration($1)==0)
                                      insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
-             |idf_v{ if(doubleDeclaration($1)==0)
-                                     insererTYPE($1,sauvType);
+             |idf_v{                     insererConstante($1,""); 
+                                         if(doubleDeclaration($1)==0)
+                                          insererTYPE($1,sauvType);
+							      else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+					      }
+             |idf_v aft VAL{           sprintf(tempVal,"%d",$3);
+                                       insererConstante($1,tempVal);
+                                       if(doubleDeclaration($1)==0)
+                                       insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
-             |idf_v aft VAL{ if(doubleDeclaration($1)==0)
-                                     insererTYPE($1,sauvType);
-							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
-					      }
-             |idf_v aft VAL vrg LISTE_CONST{ if(doubleDeclaration($1)==0)
-                                     insererTYPE($1,sauvType);
-							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+             |idf_v aft VAL vrg LISTE_CONST{ sprintf(tempVal,"%d",$3);
+                                             insererConstante($1,tempVal);                                      
+                                             if(doubleDeclaration($1)==0)
+                                             insererTYPE($1,sauvType);
+							          else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
 ;
 VAL: nb
@@ -156,14 +163,14 @@ incre: idf_v pls pls
 ;      
 BC: aco_ov LISTE_INST aco_fr
 ;
-Lecture: mc_In p_ou g SDF g vrg idf_v p_fr pvg
+Lecture: mc_In p_ou chaine vrg idf_v p_fr pvg{ if(verifierType($3,$5) ==-1)
+                                               printf("Erreur Semantique: La ligne %d , position %d , format invalide\n ",nb_ligne,nb_colonnes);
+                                               }
 ;
-Ecriture: mc_Out p_ou g SDF g vrg idf_v p_fr pvg
-;
-SDF: sfi
-     |sfr
-     |sfs
-; 	
+Ecriture: mc_Out p_ou chaine vrg idf_v p_fr pvg{ if(verifierType($3,$5) ==-1)
+                                               printf("Erreur Semantique: La ligne %d , position %d , format invalide\n ",nb_ligne,nb_colonnes);
+                                               }
+;	
 %%
 main()
 {
@@ -172,5 +179,5 @@ main()
 }
 yywrap() {}
 yyerror(char* msg){
-     printf("Erreur Syntaxique: La ligne %d , position %d \n ",nb_ligne,nb_colonnes);
+     printf("Erreur Syntaxique: La ligne %d , position %d, %s \n ",nb_ligne,nb_colonnes, msg);
 }

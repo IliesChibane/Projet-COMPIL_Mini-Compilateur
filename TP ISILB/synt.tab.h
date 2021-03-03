@@ -72,14 +72,11 @@
      infe = 288,
      mc_In = 289,
      g = 290,
-     sfi = 291,
-     sfr = 292,
-     sfs = 293,
-     mc_Out = 294,
-     br_ov = 295,
-     br_fr = 296,
-     chaine = 297,
-     reel = 298
+     mc_Out = 291,
+     br_ov = 292,
+     br_fr = 293,
+     chaine = 294,
+     reel = 295
    };
 #endif
 
@@ -90,7 +87,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 6 "synt.y"
+#line 7 "synt.y"
 
      int entier;
      char* chaine; 
@@ -98,7 +95,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 102 "synt.tab.h"
+#line 99 "synt.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -53,7 +53,6 @@ commentaire ##([^#]+|(#[^#]+)+)*##
    }
    nb_colonnes =nb_colonnes+ yyleng;return nb;} 
 {commentaire}
-"\"" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng;return g;}
 "," {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return vrg;}
 "{" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return aco_ov;}
 "}" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return aco_fr;}
@@ -70,9 +69,6 @@ commentaire ##([^#]+|(#[^#]+)+)*##
 "<" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return inf;}
 "<=" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng; return infe;}
 ">=" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng; return supe;} 
-"%c" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng; return sfs;}
-"%d" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng; return sfi;}
-"%f" { yylval.chaine=strdup(yytext);  nb_colonnes =nb_colonnes+ yyleng; return sfr;}
 ";" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng; return pvg;}
 [ \t]  nb_colonnes++;
 [\n] { nb_ligne++;  nb_colonnes=1;}
