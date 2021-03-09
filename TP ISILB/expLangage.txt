@@ -1,14 +1,19 @@
-Import ISIL.lang;
 Import ISIL.io;
+Import ISIL.lang;
 public class $ISIL_B {
-Entier $x,$z,$a;
+Entier $x,$z,$a,$t,$Entier;
 Reel $y;
-Entier @tab[-5], @tab2[3];
+Chaine $c,$ch,$sh;
+Entier @tab[5], @tab2[3];
 CONST Entier $p := 6;
 $x := (-5);
+$z := 8+$y;
 $z := $x+7;
-$t := $x / 0;
-$p := 3;
+$t := 5.5;
+$a := $c;
+$c := $ch + $sh;
+$c := $ch * $sh;
+@tab2[10] := 5;
 ## ceci est un # commentaire ##
 For($x:= 0;$x<10;$x++)
 {
@@ -16,5 +21,5 @@ For($x:= 0;$x<10;$x++)
 	$t := 5;
 }
 In("%d",$a);
-Out("%d",$a);
+Out("%d"+"%s",$a,$t);
 }
