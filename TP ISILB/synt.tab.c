@@ -491,11 +491,11 @@ static const yytype_uint8 yyrline[] =
        0,    20,    20,    23,    24,    26,    31,    32,    34,    39,
       40,    41,    42,    44,    46,    47,    49,    50,    51,    53,
       55,    60,    65,    71,    78,    79,    80,    82,    84,    85,
-      86,    88,    94,   100,   106,   113,   115,   124,   126,   127,
-     129,   135,   142,   143,   145,   146,   147,   148,   150,   165,
-     166,   167,   169,   170,   173,   174,   175,   176,   178,   180,
-     183,   186,   188,   190,   192,   193,   194,   195,   197,   199,
-     201,   207,   213,   214,   216,   217
+      86,    88,    94,   100,   106,   113,   115,   124,   131,   132,
+     134,   140,   147,   148,   150,   151,   152,   153,   155,   172,
+     173,   174,   176,   177,   180,   181,   182,   183,   185,   187,
+     190,   193,   195,   197,   199,   200,   201,   202,   204,   206,
+     208,   214,   220,   221,   223,   224
 };
 #endif
 
@@ -1643,10 +1643,22 @@ yyreduce:
 ;}
     break;
 
+  case 37:
+
+/* Line 1455 of yacc.c  */
+#line 124 "synt.y"
+    {int V =insererTailleTab((yyvsp[(1) - (4)].chaine),(yyvsp[(3) - (4)].chaine)); 
+                                                              if(V==-1)
+                                                                printf("Erreur Semantique, depassement de la taille du tableau %s a la ligne %d, position  %d\n",(yyvsp[(1) - (4)].chaine),nb_ligne,nb_colonnes);
+                                                              else if(V==-2)
+                                                                printf("Erreur Syntaxique: La ligne %d , position %d, syntax error \n ",nb_ligne,nb_colonnes);
+                                                              ;}
+    break;
+
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 129 "synt.y"
+#line 134 "synt.y"
     { if(doubleDeclaration((yyvsp[(1) - (3)].chaine))==0)
                                               insererTYPE((yyvsp[(1) - (3)].chaine),sauvType);
 							                             else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",(yyvsp[(1) - (3)].chaine),nb_ligne,nb_colonnes);
@@ -1658,7 +1670,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 135 "synt.y"
+#line 140 "synt.y"
     { if(doubleDeclaration((yyvsp[(1) - (1)].chaine))==0)
                                      insererTYPE((yyvsp[(1) - (1)].chaine),sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",(yyvsp[(1) - (1)].chaine),nb_ligne,nb_colonnes);
@@ -1670,7 +1682,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 150 "synt.y"
+#line 155 "synt.y"
     { if(doubleDeclaration((yyvsp[(1) - (4)].chaine))==0)
                                           printf("Erreur semantique, %s non declaree a la ligne %d , position %d\n",(yyvsp[(1) - (4)].chaine),nb_ligne, nb_colonnes);     
                                         if(verifierConstante((yyvsp[(1) - (4)].chaine))==-1)
@@ -1682,6 +1694,8 @@ yyreduce:
                                           printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
                                         else if (V==-2)
                                           printf("Erreur Semantique: La ligne %d , position %d , multiplication entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-3)
+                                          printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
                                         if(MotNonReserver((yyvsp[(1) - (4)].chaine))==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
 					      ;}
@@ -1690,35 +1704,35 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 173 "synt.y"
-    {sauvegardeTypeExpression((yyvsp[(1) - (1)].chaine));;}
+#line 180 "synt.y"
+    {sauvegardeTypeExpression((yyvsp[(1) - (1)].chaine)," ");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 174 "synt.y"
-    {sauvegardeTypeExpression("Entier");;}
+#line 181 "synt.y"
+    {sprintf(exp, "%d", (yyvsp[(1) - (1)].entier)); sauvegardeTypeExpression("Entier",exp);;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 175 "synt.y"
-    {sauvegardeTypeExpression("Reel");;}
+#line 182 "synt.y"
+    {sprintf(exp,"%d.%02u", (int) (yyvsp[(1) - (1)].entier), (int) (((yyvsp[(1) - (1)].entier) - (int) (yyvsp[(1) - (1)].entier) ) * 100) );  sauvegardeTypeExpression("Reel",exp);;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 176 "synt.y"
-    {sauvegardeTypeExpression("Chaine");;}
+#line 183 "synt.y"
+    {strcpy(exp,(yyvsp[(1) - (1)].entier)); sauvegardeTypeExpression("Chaine",exp);;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 178 "synt.y"
+#line 185 "synt.y"
     {if(VerifBib("ISIL.lang")==-1)
               printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);;}
     break;
@@ -1726,7 +1740,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 180 "synt.y"
+#line 187 "synt.y"
     {   savOPR((yyvsp[(1) - (1)].chaine));
               if(VerifBib("ISIL.lang")==-1)
                 printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);;}
@@ -1735,7 +1749,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 183 "synt.y"
+#line 190 "synt.y"
     {if(VerifBib("ISIL.lang")==-1)
               printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);;}
     break;
@@ -1743,7 +1757,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 201 "synt.y"
+#line 208 "synt.y"
     { if(verifierType((yyvsp[(3) - (7)].entier),(yyvsp[(5) - (7)].chaine)) ==-1)
                                                printf("Erreur Semantique: La ligne %d , position %d , format invalide\n ",nb_ligne,nb_colonnes);
                                                if(VerifBib("ISIL.io")==-1)
@@ -1754,7 +1768,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 207 "synt.y"
+#line 214 "synt.y"
     { if(VerifBib("ISIL.io")==-1)
                                                             printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.io non declare\n ",nb_ligne,nb_colonnes);
                                                           if(ecritureValide()==-1)
@@ -1765,35 +1779,35 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 213 "synt.y"
-    {;savCh((yyvsp[(1) - (3)].entier));;}
+#line 220 "synt.y"
+    {savCh((yyvsp[(1) - (3)].entier));;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 214 "synt.y"
+#line 221 "synt.y"
     {savCh((yyvsp[(1) - (1)].entier));;}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 216 "synt.y"
+#line 223 "synt.y"
     {savVal((yyvsp[(1) - (3)].chaine));;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 217 "synt.y"
+#line 224 "synt.y"
     {savVal((yyvsp[(1) - (1)].chaine));;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1797 "synt.tab.c"
+#line 1811 "synt.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2005,7 +2019,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 219 "synt.y"
+#line 226 "synt.y"
 
 main()
 {

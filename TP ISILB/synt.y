@@ -121,7 +121,12 @@ Idf_tab: idf_tab br_ov nb br_fr{ if($3 < 0)
                                       printf("Erreur Semantique, depassement de la taille du tableau %s a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
                                   }              
 }
-                                 |idf_tab br_ov tabID br_fr
+                                 |idf_tab br_ov tabID br_fr {int V =insererTailleTab($1,$3); 
+                                                              if(V==-1)
+                                                                printf("Erreur Semantique, depassement de la taille du tableau %s a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
+                                                              else if(V==-2)
+                                                                printf("Erreur Syntaxique: La ligne %d , position %d, syntax error \n ",nb_ligne,nb_colonnes);
+                                                              }
 ;
 tabID: Idf_tab 
        |idf_v
@@ -158,6 +163,8 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
                                           printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
                                         else if (V==-2)
                                           printf("Erreur Semantique: La ligne %d , position %d , multiplication entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-3)
+                                          printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
                                         if(MotNonReserver($1)==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
 					      }
@@ -170,10 +177,10 @@ IDF_NB: IDF_NBB
         |Idf_tab
 
 ;
-IDF_NBB: idf_v {sauvegardeTypeExpression($1);}
-         |nb {sauvegardeTypeExpression("Entier");}
-         |reel {sauvegardeTypeExpression("Reel");}
-         |chaine {sauvegardeTypeExpression("Chaine");}
+IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
+         |nb {sprintf(exp, "%d", $1); sauvegardeTypeExpression("Entier",exp);}
+         |reel {sprintf(exp,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",exp);}
+         |chaine {strcpy(exp,$1); sauvegardeTypeExpression("Chaine",exp);}
 ; 
 OPR: pls {if(VerifBib("ISIL.lang")==-1)
               printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
@@ -210,7 +217,7 @@ Ecriture: mc_Out p_ou List_chaine vrg List_val p_fr pvg { if(VerifBib("ISIL.io")
                                                             printf("Erreur Semantique: La ligne %d , position %d , format invalide\n ",nb_ligne,nb_colonnes);
                                                      }
 ;	
-List_chaine: chaine pls List_chaine {;savCh($1);}
+List_chaine: chaine pls List_chaine {savCh($1);}
               | chaine {savCh($1);}
 ;
 List_val: idf_v  vrg List_val {savVal($1);}

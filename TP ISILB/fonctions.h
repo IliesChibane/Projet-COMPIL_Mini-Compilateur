@@ -20,7 +20,7 @@
 		//Liste contenant le type des valeurs qui ne sont pas des variables exp : 5 est de type reel "faux" est de type chaine...
 		typedef struct TE
 		{
-    		char *te;
+    		char *te,*ve;
     		struct TS *svt;
 		}TE;
 
@@ -218,22 +218,44 @@
 int insererTailleTab(char entite[],char taille[])
 	{
 		TS *pos = recherche(entite);
-		int t = atoi(taille);
-		
-		if(pos!=NULL){
-			if(pos->tabS.taille==0)
-			{
-				
-				pos->tabS.taille = t;
+		TS *pos1 = recherche(taille);
 
+		if(pos1==NULL){
+			int t = atoi(taille);
+		
+			if(pos!=NULL){
+				if(pos->tabS.taille==0)
+				{
+					
+					pos->tabS.taille = t;
+
+					return 1;
+				}else{
+					if(pos->tabS.taille<=t)
+						return -1;
+				}
 				return 1;
-			}else{
-				if(pos->tabS.taille<=t)
-					return -1;
 			}
-			return 1;
 		}
-	}
+		else
+		{
+			if(strcmp(pos1->tabS.TypeEntite,"Reel")==0)
+				return-2;
+			int t = atoi(pos1->tabS.valeur);
+			if(pos!=NULL){
+				if(pos->tabS.taille==0)
+				{
+					
+					pos->tabS.taille = t;
+
+					return 1;
+				}else{
+					if(pos->tabS.taille<=t)
+						return -1;
+				}
+				return 1;
+		}
+	}}
 
 //Verifie si la bib a ete declarer ou non
 int VerifBib(char BIB[])
@@ -244,20 +266,35 @@ int VerifBib(char BIB[])
 }
 
 //sauvegarde le type d'une expression (fontion utiliser au niveau de l'affectation)
-void sauvegardeTypeExpression(char entite[])
+void sauvegardeTypeExpression(char entite[],char val[])
 {
+	if(strcmp(entite,"Chaine")==0)
+	{
+		char *inter = (char*) malloc((strlen(val)-2)*sizeof(char));
+		int l = 0;
+		while(l<(strlen(val)-2))
+		{
+			inter[l] = val[l+1];
+			l++;
+		}
+		strcpy(val,inter);
+	}
 	if(typeExp==NULL)
 	{
 		typeExp = (TE *) malloc(sizeof (TE));
 		typeExp->te = (char*) malloc(strlen(entite)*sizeof(char));
+		typeExp->ve = (char*) malloc(strlen(val)*sizeof(char));
 		strcpy(typeExp->te,entite);
+		strcpy(typeExp->ve,val);
 		typeExp->svt = NULL;
 		qq=typeExp;
 	}
 	else{
 		rr =(TE *) malloc(sizeof (TE));
 		rr->te = (char*) malloc(strlen(entite)*sizeof(char));
+		rr->ve = (char*) malloc(strlen(val)*sizeof(char));
 		strcpy(rr->te,entite);
+		strcpy(rr->ve,val);
 		rr->svt = NULL;
 		qq->svt=rr;
 		qq=rr;
@@ -291,9 +328,20 @@ void savOPR(char entite[])
 int VerifAffection(char entite[])
 {
 	TE *e=typeExp;
-	TS *pos = recherche(entite),*pos2 = recherche(e->te);
+	TS *pos = recherche(entite),*pos2; 
+	char *typeAffect,ac[1000] = "",final[1000];
+	int ae=0;
+	float ar=0;
+
+	if(opr!=NULL){
+		if(strcmp(opr,"*")==0)
+			ae=1;
+		else
+			ae=0;
+	}
 	
 	while(e!=NULL){
+		pos2 = recherche(e->te);
 		if(pos2!=NULL)
 		{
 			if(strcmp(pos->tabS.TypeEntite,pos2->tabS.TypeEntite)!=0)
@@ -301,12 +349,67 @@ int VerifAffection(char entite[])
 				videTypeExp();
 				return -1;
 			}
+			else{
+				if(strcmp(pos2->tabS.valeur,"")!=0)
+				{
+					if(strcmp(pos2->tabS.TypeEntite,"Entier")==0)
+					{
+						if(opr!=NULL){
+							if(strcmp(opr,"*")==0)
+								ae=ae*atoi(pos2->tabS.valeur);
+							else
+								ae=ae+atoi(pos2->tabS.valeur);
+						}else
+						{
+							ae=ae+atoi(pos2->tabS.valeur);
+						}
+					}
+					else if(strcmp(pos2->tabS.TypeEntite,"Reel")==0)
+					{
+						ar=ar+atoi(pos2->tabS.valeur);
+					}
+					else
+					{
+						strcat(ac,pos2->tabS.valeur);
+					}
+					typeAffect = (char*) malloc(strlen(pos2->tabS.TypeEntite)*sizeof(char));
+					strcpy(typeAffect,pos2->tabS.TypeEntite);
+				}
+				else
+				{
+					return-3;
+				}
+			}
 		}
 		else{
 			if(strcmp(pos->tabS.TypeEntite,e->te)!=0)
 			{
 				videTypeExp();
 				return -1;
+			}
+			else{
+					if(strcmp(e->te,"Entier")==0)
+					{
+						if(opr!=NULL){
+							if(strcmp(opr,"*")==0)
+								ae=ae*atoi(e->ve);
+							else
+								ae=ae+atoi(e->ve);
+						}else
+						{
+							ae=ae+atoi(e->ve);
+						}
+					}
+					else if(strcmp(e->te,"Reel")==0)
+					{
+						ar=ar+atoi(e->ve);
+					}
+					else
+					{
+						strcat(ac,e->ve);
+					}
+					typeAffect = (char*) malloc(strlen(e->te)*sizeof(char));
+					strcpy(typeAffect,e->te);
 			}
 		}
 		
@@ -332,6 +435,14 @@ int VerifAffection(char entite[])
 		}}
 		e=e->svt;
 	}
+	if(strcmp(typeAffect,"Entier")==0)
+		sprintf(final, "%d", ae);
+	else if(strcmp(typeAffect,"Reel")==0)
+		sprintf(final, "%f", ar);
+	else
+		strcpy(final,ac);
+	
+	insererVal(entite,final);
 	videTypeExp();
 	return 1;
 }
@@ -410,4 +521,11 @@ int ecritureValide()
 		u=u->svt;
 	}
 	return 1;
+}
+
+void insererVal(char entite[],char val[])
+{
+	TS *pos = recherche(entite);
+	if(strcmp(pos->tabS.CodeEntite,"idf_tab")!=0)
+		strcpy(pos->tabS.valeur,val);
 }
