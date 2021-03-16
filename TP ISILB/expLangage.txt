@@ -15,15 +15,17 @@ $a := $c;
 $ch := "ou";
 $sh := "i";
 $c := $ch + $sh;
+$c := $ch * $sh;
 @tab[$w] := 5;
 @tab[$z] := 5;
 @tab2[10] := 5;
 ## ceci est un # commentaire ##
 For($x:= 0;$x<10;$x++)
 {
-	$t := 5;
-	$a := $t+1;
+	$t := 10;
+	$a := 2*3;
 }
+$t := 10;
 In("%d",$a);
 Out("%d"+"%s",$a,$t);
 }

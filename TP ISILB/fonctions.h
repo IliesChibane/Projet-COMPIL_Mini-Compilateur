@@ -347,6 +347,7 @@ int VerifAffection(char entite[])
 			if(strcmp(pos->tabS.TypeEntite,pos2->tabS.TypeEntite)!=0)
 			{
 				videTypeExp();
+				opr = NULL;
 				return -1;
 			}
 			else{
@@ -377,6 +378,7 @@ int VerifAffection(char entite[])
 				}
 				else
 				{
+					opr = NULL;
 					return-3;
 				}
 			}
@@ -385,6 +387,7 @@ int VerifAffection(char entite[])
 			if(strcmp(pos->tabS.TypeEntite,e->te)!=0)
 			{
 				videTypeExp();
+				opr = NULL;
 				return -1;
 			}
 			else{
@@ -422,6 +425,7 @@ int VerifAffection(char entite[])
 			if(strcmp(pos2->tabS.TypeEntite,"Chaine")==0)
 			{
 				videTypeExp();
+				opr = NULL;
 				return -2;
 			}
 		}
@@ -429,6 +433,7 @@ int VerifAffection(char entite[])
 			if(strcmp(e->te,"Chaine")==0)
 			{
 				videTypeExp();
+				opr = NULL;
 				return -2;
 			}
 		}
@@ -444,6 +449,7 @@ int VerifAffection(char entite[])
 	
 	insererVal(entite,final);
 	videTypeExp();
+	opr = NULL;
 	return 1;
 }
 
