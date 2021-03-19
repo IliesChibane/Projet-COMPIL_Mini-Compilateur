@@ -162,7 +162,7 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
                                         if(V==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
                                         else if (V==-2)
-                                          printf("Erreur Semantique: La ligne %d , position %d , multiplication entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                          printf("Erreur Semantique: La ligne %d , position %d , operation entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
                                         else if (V==-3)
                                           printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
                                         if(MotNonReserver($1)==-1)
@@ -171,7 +171,9 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
 ;
 Expression: IDF_NB OPR Expression 
             |IDF_NB
-            |IDF_NB divise nb
+            |IDF_NB divise nb {savOPR($2); 
+                               if(VerifBib("ISIL.lang")==-1)
+                                printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
 ;
 IDF_NB: IDF_NBB
         |Idf_tab
@@ -182,12 +184,14 @@ IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
          |reel {sprintf(exp,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",exp);}
          |chaine {strcpy(exp,$1); sauvegardeTypeExpression("Chaine",exp);}
 ; 
-OPR: pls {if(VerifBib("ISIL.lang")==-1)
+OPR: pls {savOPR($1); 
+          if(VerifBib("ISIL.lang")==-1)
               printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
      |mlt {   savOPR($1);
               if(VerifBib("ISIL.lang")==-1)
                 printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
-     |mns {if(VerifBib("ISIL.lang")==-1)
+     |mns {savOPR($1);
+            if(VerifBib("ISIL.lang")==-1)
               printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
 ;
 BOUCLE: mc_for p_ou init pvg condition pvg incre p_fr BC 
@@ -233,3 +237,4 @@ yywrap() {}
 yyerror(char* msg){
      printf("Erreur Syntaxique: La ligne %d , position %d, %s \n ",nb_ligne,nb_colonnes, msg);
 }
+

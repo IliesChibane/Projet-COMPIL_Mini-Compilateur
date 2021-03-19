@@ -1,7 +1,7 @@
 Import ISIL.io;
 Import ISIL.lang;
 public class $ISIL_B {
-Entier $x,$z,$a,$k,$t,$w,$Entier;
+Entier $x,$z,$a,$k,$t,$w,$p,$Entier;
 Reel $y;
 Chaine $c,$ch,$sh;
 Entier @tab[5], @tab2[3];
@@ -11,11 +11,13 @@ $z := $x+7;
 $k := 8+$y;
 $t := 5.5;
 $w := 2;
+$p := 2+2*3;
 $a := $c;
 $ch := "ou";
 $sh := "i";
 $c := $ch + $sh;
 $c := $ch * $sh;
+$c := $ch - $sh;
 @tab[$w] := 5;
 @tab[$z] := 5;
 @tab2[10] := 5;

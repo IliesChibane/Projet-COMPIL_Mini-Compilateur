@@ -21,14 +21,14 @@
 		typedef struct TE
 		{
     		char *te,*ve;
-    		struct TS *svt;
+    		struct TE *svt;
 		}TE;
 
 		//Liste contenant les chaines a afficher ainsi que leur types
 		typedef struct OUT
 		{
     		char *ch,*val;
-    		struct TS *svt;
+    		struct OUT *svt;
 		}OUT;
 		//Initialisation de la table des symboles
         TS *TableSymbole=NULL,*r,*q; 
@@ -317,11 +317,30 @@ void videTypeExp()
 }
 
 //sauvegarde l'operation utiliser dans l'affectation
-char *opr;
+//Liste contenant les chaines a afficher ainsi que leur types
+typedef struct PILEOPR
+{
+    char *o;
+    struct PILEOPR *svt;
+}PILEOPR;
+PILEOPR *opr,*qopr,*ropr;
 void savOPR(char entite[])
 {
-	opr=(char*) malloc(strlen(entite)*sizeof(char));
-	strcpy(opr,entite);
+	if(opr==NULL)
+	{
+		opr = (PILEOPR*) malloc(sizeof(PILEOPR));
+		opr->o=(char*) malloc(strlen(entite)*sizeof(char));
+	    strcpy(opr->o,entite);
+	    qopr = opr;
+	}
+	else
+	{
+		ropr = (PILEOPR*) malloc(sizeof(PILEOPR));
+		ropr->o=(char*) malloc(strlen(entite)*sizeof(char));
+	    strcpy(ropr->o,entite);
+	    qopr->svt = ropr;
+	    qopr = ropr;
+	}
 }
 
 //verifie si l'affectation est valide ou non
@@ -334,10 +353,12 @@ int VerifAffection(char entite[])
 	float ar=0;
 
 	if(opr!=NULL){
-		if(strcmp(opr,"*")==0)
-			ae=1;
+		pos2 = recherche(e->te);
+		if(pos2!=NULL)
+			ae = ae+atoi(pos2->tabS.valeur);
 		else
-			ae=0;
+			ae = ae+atoi(e->ve);
+		e = e->svt;
 	}
 	
 	while(e!=NULL){
@@ -356,10 +377,14 @@ int VerifAffection(char entite[])
 					if(strcmp(pos2->tabS.TypeEntite,"Entier")==0)
 					{
 						if(opr!=NULL){
-							if(strcmp(opr,"*")==0)
+							if(strcmp(opr->o,"*")==0)
 								ae=ae*atoi(pos2->tabS.valeur);
-							else
+							else if(strcmp(opr->o,"+")==0)
 								ae=ae+atoi(pos2->tabS.valeur);
+							else if(strcmp(opr->o,"-")==0)
+								ae=ae-atoi(pos2->tabS.valeur);
+							else
+								ae=ae/atoi(pos2->tabS.valeur);
 						}else
 						{
 							ae=ae+atoi(pos2->tabS.valeur);
@@ -394,10 +419,16 @@ int VerifAffection(char entite[])
 					if(strcmp(e->te,"Entier")==0)
 					{
 						if(opr!=NULL){
-							if(strcmp(opr,"*")==0)
+							if(strcmp(opr->o,"*")==0)
 								ae=ae*atoi(e->ve);
-							else
+							else if(strcmp(opr->o,"+")==0)
 								ae=ae+atoi(e->ve);
+							else if(strcmp(opr->o,"-")==0)
+								ae=ae-atoi(e->ve);
+							else if(strcmp(opr->o,"/")==0)
+							{
+								ae=ae/atoi(e->ve);
+							}
 						}else
 						{
 							ae=ae+atoi(e->ve);
@@ -415,9 +446,8 @@ int VerifAffection(char entite[])
 					strcpy(typeAffect,e->te);
 			}
 		}
-		
 		if(opr!=NULL){
-		if(strcmp(opr,"*")==0)
+		if((strcmp(opr->o,"*")==0)||(strcmp(opr->o,"-")==0))
 		{
 		if(pos2!=NULL)
 		{
@@ -439,6 +469,8 @@ int VerifAffection(char entite[])
 		}
 		}}
 		e=e->svt;
+		if(opr!=NULL)
+			opr = opr->svt;
 	}
 	if(strcmp(typeAffect,"Entier")==0)
 		sprintf(final, "%d", ae);
