@@ -316,7 +316,7 @@ void videTypeExp()
 
 }
 
-//sauvegarde l'operation utiliser dans l'affectation
+//sauvegarde l operation utiliser dans l'affectation
 //Liste contenant les chaines a afficher ainsi que leur types
 typedef struct PILEOPR
 {
@@ -354,9 +354,9 @@ int VerifAffection(char entite[])
 
 	if(opr!=NULL){
 		pos2 = recherche(e->te);
-		if(pos2!=NULL)
+		if((pos2!=NULL)&&(strcmp(pos2->tabS.TypeEntite,"Entier")==0))
 			ae = ae+atoi(pos2->tabS.valeur);
-		else
+		else if (strcmp(e->te,"Entier")==0)
 			ae = ae+atoi(e->ve);
 		e = e->svt;
 	}
