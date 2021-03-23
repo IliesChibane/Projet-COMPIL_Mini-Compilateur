@@ -82,14 +82,17 @@ VAL: nb {
 
   sprintf(tempVal,"%d",$1);
    $$ = tempVal;
+  sprintf(express, "%d", $1); sauvegardeTypeExpression("Entier",express);
 }
      |chaine {
   sprintf(tempVal,"%s",$1);
    $$ = tempVal;
+  sauvegardeTypeExpression("Chaine",$1);
 }
      |reel {
     sprintf(tempVal,"%.3f",$1);
      $$ = tempVal;
+    sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",express);
 }
 ;
 DEC_VAR: TYPE LISTE_IDF pvg
@@ -113,17 +116,31 @@ LISTE_IDF: idf_v vrg LISTE_IDF { if(doubleDeclaration($1)==0)
           |idf_v aft VAL vrg LISTE_IDF{ if(doubleDeclaration($1)==0)
                                     insererTYPE($1,sauvType);
                 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
-                                  insererVal($1,$3);
                 					        if(MotNonReserver($1)==-1)
                                     printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                                  int V =VerifAffection($1);
+                                        if(V==-1)
+                                          printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-2)
+                                          printf("Erreur Semantique: La ligne %d , position %d , operation entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-3)
+                                          printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
+                                  insererVal($1,$3);
                             
                 }
           |idf_v aft VAL{ if(doubleDeclaration($1)==0)
                                     insererTYPE($1,sauvType);
                 					else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
-                           insererVal($1,$3);
-                					        if(MotNonReserver($1)==-1)
-                                    printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                					if(MotNonReserver($1)==-1)
+                            printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                          int V =VerifAffection($1);
+                                if(V==-1)
+                                  printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
+                                else if (V==-2)
+                                  printf("Erreur Semantique: La ligne %d , position %d , operation entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                else if (V==-3)
+                                  printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
+                          insererVal($1,$3);
                            
                 }
 ;	
@@ -177,6 +194,13 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
                                           printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes); 
                                         if(MotNonReserver($1)==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                                        int V =VerifAffection($1);
+                                        if(V==-1)
+                                          printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-2)
+                                          printf("Erreur Semantique: La ligne %d , position %d , operation entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
+                                        else if (V==-3)
+                                          printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
 					      }
 ;
 Expression: IDF_NB OPR Expression 
