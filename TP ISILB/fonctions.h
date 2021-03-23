@@ -177,7 +177,10 @@
 	TS *pos;
 	pos=recherche(entite);
 	strcpy(pos->tabS.Constante,"oui");
-	strcpy(pos->tabS.valeur,valeur);
+	if(valeur[0]=='\"'){
+          strncpy(pos->tabS.valeur,valeur+1,strlen(valeur)-2);
+	}else	strcpy(pos->tabS.valeur,valeur);
+
 	}
 
 

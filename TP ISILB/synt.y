@@ -64,15 +64,15 @@ LISTE_CONST: idf_v vrg LISTE_CONST{  insererConstante($1,"");
 							      else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
              |idf_v aft VAL{   
-                                       sprintf(tempVal,"%s",$3);
-                                      insererConstante($1,tempVal);   
+                                       
+                                      insererConstante($1,$3);   
                                        if(doubleDeclaration($1)==0)
                                        insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
              |idf_v aft VAL vrg LISTE_CONST{
-                                             sprintf(tempVal,"%s",$3);
-                                             insererConstante($1,tempVal);                                       
+                                            
+                                             insererConstante($1,$3);                                       
                                              if(doubleDeclaration($1)==0)
                                              insererTYPE($1,sauvType);
 							          else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
@@ -217,7 +217,7 @@ IDF_NB: IDF_NBB
 IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
          |nb {sprintf(express, "%d", $1); sauvegardeTypeExpression("Entier",express);}
          |reel {sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",express);}
-         |chaine { sauvegardeTypeExpression("Chaine",$1);}
+         |chaine { sauvegardeTypeExpression("Chaine",$1); }
 ; 
 OPR: pls {savOPR($1); 
           if(VerifBib("ISIL.lang")==-1)

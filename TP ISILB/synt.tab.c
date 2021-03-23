@@ -1548,8 +1548,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 66 "synt.y"
     {   
-                                       sprintf(tempVal,"%s",(yyvsp[(3) - (3)].chaine));
-                                      insererConstante((yyvsp[(1) - (3)].chaine),tempVal);   
+                                       
+                                      insererConstante((yyvsp[(1) - (3)].chaine),(yyvsp[(3) - (3)].chaine));   
                                        if(doubleDeclaration((yyvsp[(1) - (3)].chaine))==0)
                                        insererTYPE((yyvsp[(1) - (3)].chaine),sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",(yyvsp[(1) - (3)].chaine),nb_ligne,nb_colonnes);
@@ -1561,8 +1561,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 73 "synt.y"
     {
-                                             sprintf(tempVal,"%s",(yyvsp[(3) - (5)].chaine));
-                                             insererConstante((yyvsp[(1) - (5)].chaine),tempVal);                                       
+                                            
+                                             insererConstante((yyvsp[(1) - (5)].chaine),(yyvsp[(3) - (5)].chaine));                                       
                                              if(doubleDeclaration((yyvsp[(1) - (5)].chaine))==0)
                                              insererTYPE((yyvsp[(1) - (5)].chaine),sauvType);
 							          else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",(yyvsp[(1) - (5)].chaine),nb_ligne,nb_colonnes);
@@ -1797,7 +1797,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 220 "synt.y"
-    { sauvegardeTypeExpression("Chaine",(yyvsp[(1) - (1)].chaine));;}
+    { sauvegardeTypeExpression("Chaine",(yyvsp[(1) - (1)].chaine)); ;}
     break;
 
   case 58:
