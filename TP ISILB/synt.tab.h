@@ -91,11 +91,12 @@ typedef union YYSTYPE
 
      int entier;
      char* chaine; 
+     float floa;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 99 "synt.tab.h"
+#line 100 "synt.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -2,7 +2,10 @@
 #include "synt.tab.h"
 #include "stdio.h"
 #include "string.h"
+#include "stdlib.h"
 #include "fonctions.h"
+
+
 extern nb_ligne;
 extern nb_colonnes;
 extern YYSTYPE yylval;
@@ -19,10 +22,10 @@ chaine \"(\\.|[^"\\])*\"
 chiffres1 [1-9]
 idf_tab "@"{idf}
 nombrepos {chiffres}|{chiffres1}{chiffres}*
-nombre {nombrepos}|"("?[-]{nombrepos}")"?
+nombre {nombrepos}|"("[-]?{nombrepos}")"
 /*nombre {chiffres}+*/
-reel {nombre}"."{nombrepos}
-commentaire ##([^#]+|(#[^#]+)+)*##
+reel ({nombrepos}"."{chiffres}+)|("("[-]?{nombrepos}"."{chiffres}+")")
+commentaire (##([^#|\n]|(#[^#]+|\n))*##)|(##.+##)
 /*fSigne (\"%[dfs]\")*/
 
 %%
@@ -43,7 +46,7 @@ commentaire ##([^#]+|(#[^#]+)+)*##
 {idf_v} {inserer(yytext,"idf_v"); yylval.chaine=strdup(yytext); if(yyleng > 25) { printf("\nErreur lexicale: Identificateur %s a la ligne %d et position %d a une taille de %d , ceci est trop long \n",yytext,nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng; return idf_v; }
 {idf_tab} {inserer(yytext,"idf_tab"); yylval.chaine=strdup(yytext); if(yyleng > 25) { printf("\nErreur lexicale: Identificateur %s a la ligne %d et position %d a une taille de %d , ceci est trop long \n",yytext, nb_ligne, nb_colonnes, yyleng); }nb_colonnes =nb_colonnes+ yyleng;return idf_tab;}
 {chaine} { nb_colonnes =nb_colonnes+ yyleng; yylval.chaine=strdup(yytext); return chaine;}
-{reel} { nb_colonnes =nb_colonnes+ yyleng; yylval.entier = atoi(yytext); return reel;}
+{reel} { nb_colonnes =nb_colonnes+ yyleng; yylval.floa = atof(yytext); return reel;}
 {nombre} { 
    if(yytext[0]!='(')
       yylval.entier = atoi(yytext); 
@@ -52,7 +55,16 @@ commentaire ##([^#]+|(#[^#]+)+)*##
       sscanf(yytext,"(%d)",&yylval.entier);
    }
    nb_colonnes =nb_colonnes+ yyleng;return nb;} 
-{commentaire}
+{commentaire} {
+   int l = strlen(yytext) , i = 0;
+   for( i = 0; i< l; i++){
+      if(yytext[i]=='\n'){
+         nb_ligne ++;
+         nb_colonnes = 0;
+      }
+      nb_colonnes++;
+   }
+}
 "," {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return vrg;}
 "{" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return aco_ov;}
 "}" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng;return aco_fr;}
@@ -72,5 +84,5 @@ commentaire ##([^#]+|(#[^#]+)+)*##
 ";" {  yylval.chaine=strdup(yytext); nb_colonnes =nb_colonnes+ yyleng; return pvg;}
 [ \t]  nb_colonnes++;
 [\n] { nb_ligne++;  nb_colonnes=1;}
-. {printf("Erreur lexicale a ligne %d et la position %d sur l'entite %s\n",nb_ligne,nb_colonnes,yytext);
+. {printf("Erreur lexicale a ligne %d et la position %d sur l'entite %s\n",nb_ligne,nb_colonnes, yytext);
    return err;  }

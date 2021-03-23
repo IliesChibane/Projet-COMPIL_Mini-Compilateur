@@ -4,18 +4,19 @@ int nb_colonnes = 1;
 char sauvType[20];
 char tempVal[20];
 char taille[10];
-char exp[100];
+char express[100];
 %}
 %union{
      int entier;
      char* chaine; 
+     float floa;
 }
 %type <chaine> Idf_tab tabID NOM_BIB MODIFICATEUR VAL
 %token <chaine>mc_import pvg <chaine>bib_io <chaine>bib_lang err <chaine>mc_public 
        <chaine>mc_private <chaine>mc_protected <chaine>mc_class <chaine>idf_v aco_ov aco_fr
 	   <chaine>mc_entier <chaine>mc_reel <chaine>mc_chaine mc_const vrg <chaine>idf_tab
 	   pls mns mlt divise <entier>nb p_ou p_fr aft mc_for sup inf supe infe  
-	   mc_In g    mc_Out br_ov br_fr chaine reel
+	   mc_In g    mc_Out br_ov br_fr <chaine>chaine <floa>reel
 %%
 S: LISTE_BIB HEADER_CLASS aco_ov CORPS aco_fr{printf("Programme syntaxiquement correct"); 
                YYACCEPT;        }
@@ -39,7 +40,7 @@ HEADER_CLASS: MODIFICATEUR mc_class idf_v{ if(doubleDeclaration($3)==0)
 MODIFICATEUR: mc_public
               |mc_private
 		          |mc_protected
-              |
+              |{ strcpy($$, "");}
 ; 
 CORPS:LISTE_DEC LISTE_INST
 ;  
@@ -62,28 +63,40 @@ LISTE_CONST: idf_v vrg LISTE_CONST{  insererConstante($1,"");
                                           insererTYPE($1,sauvType);
 							      else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
-             |idf_v aft VAL{           sprintf(tempVal,"%d",$3);
-                                       insererConstante($1,tempVal);
+             |idf_v aft VAL{   
+                                       sprintf(tempVal,"%s",$3);
+                                      insererConstante($1,tempVal);   
                                        if(doubleDeclaration($1)==0)
                                        insererTYPE($1,sauvType);
 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
-             |idf_v aft VAL vrg LISTE_CONST{ sprintf(tempVal,"%d",$3);
-                                             insererConstante($1,tempVal);                                      
+             |idf_v aft VAL vrg LISTE_CONST{
+                                             sprintf(tempVal,"%s",$3);
+                                             insererConstante($1,tempVal);                                       
                                              if(doubleDeclaration($1)==0)
                                              insererTYPE($1,sauvType);
 							          else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
 					      }
 ;
-VAL: nb
-     |chaine
-     |reel
+VAL: nb {
+
+  sprintf(tempVal,"%d",$1);
+   $$ = tempVal;
+}
+     |chaine {
+  sprintf(tempVal,"%s",$1);
+   $$ = tempVal;
+}
+     |reel {
+    sprintf(tempVal,"%.3f",$1);
+     $$ = tempVal;
+}
 ;
 DEC_VAR: TYPE LISTE_IDF pvg
 ;
 TYPE: mc_entier {strcpy(sauvType,$1);}
       |mc_reel {strcpy(sauvType,$1);}
-	 |mc_chaine {strcpy(sauvType,$1);}
+	    |mc_chaine {strcpy(sauvType,$1);}
 ;
 LISTE_IDF: idf_v vrg LISTE_IDF { if(doubleDeclaration($1)==0)
                                     insererTYPE($1,sauvType);
@@ -100,14 +113,18 @@ LISTE_IDF: idf_v vrg LISTE_IDF { if(doubleDeclaration($1)==0)
           |idf_v aft VAL vrg LISTE_IDF{ if(doubleDeclaration($1)==0)
                                     insererTYPE($1,sauvType);
                 							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+                                  insererVal($1,$3);
                 					        if(MotNonReserver($1)==-1)
                                     printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                            
                 }
           |idf_v aft VAL{ if(doubleDeclaration($1)==0)
                                     insererTYPE($1,sauvType);
-                							    else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+                					else printf("Erreur Semantique: double declaration  de %s a la ligne %d , position %d\n",$1,nb_ligne,nb_colonnes);
+                           insererVal($1,$3);
                 					        if(MotNonReserver($1)==-1)
                                     printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
+                           
                 }
 ;	
 DEC_TAB: TYPE LISTE_IDF_TAB pvg
@@ -158,13 +175,6 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
                                           printf("Erreur semantique, vous ne pouvez pas affecter une deuxime valeur a la constante de la ligne %d , position %d\n", nb_ligne, nb_colonnes);  
                                         if(VerifBib("ISIL.lang")==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes); 
-                                        int V =VerifAffection($1);
-                                        if(V==-1)
-                                          printf("Erreur Semantique: La ligne %d , position %d , la valeur affecter n'est pas du meme type que la variable\n ",nb_ligne,nb_colonnes);
-                                        else if (V==-2)
-                                          printf("Erreur Semantique: La ligne %d , position %d , operation entre chaine non autoriser\n ",nb_ligne,nb_colonnes);
-                                        else if (V==-3)
-                                          printf("Erreur Semantique: La ligne %d , position %d , variable affecter vide\n ",nb_ligne,nb_colonnes);
                                         if(MotNonReserver($1)==-1)
                                           printf("Erreur Semantique: La ligne %d , position %d , le nom de la variable est un mot reserve\n ",nb_ligne,nb_colonnes);
 					      }
@@ -175,14 +185,15 @@ Expression: IDF_NB OPR Expression
                                if(VerifBib("ISIL.lang")==-1)
                                 printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
 ;
+ 
 IDF_NB: IDF_NBB
         |Idf_tab
 
 ;
 IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
-         |nb {sprintf(exp, "%d", $1); sauvegardeTypeExpression("Entier",exp);}
-         |reel {sprintf(exp,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",exp);}
-         |chaine {strcpy(exp,$1); sauvegardeTypeExpression("Chaine",exp);}
+         |nb {sprintf(express, "%d", $1); sauvegardeTypeExpression("Entier",express);}
+         |reel {sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",express);}
+         |chaine { sauvegardeTypeExpression("Chaine",$1);}
 ; 
 OPR: pls {savOPR($1); 
           if(VerifBib("ISIL.lang")==-1)

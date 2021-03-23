@@ -1,4 +1,7 @@
 // Programmation de la table des symboles
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
  //Déclatarion de la structure
 		typedef struct
 		{
@@ -88,8 +91,7 @@
   				TableSymbole=NULL;
   			}
   			return -1;
-  		}
-  		
+  		}		
   	}
   	return 1;
   }		
@@ -204,7 +206,7 @@
 				               case'd': 
 							           if(strcmp(pos->tabS.TypeEntite,"Entier") !=0) return -1;
 				                        break;
-				               case's': 
+				               case's' :
 							           if(strcmp(pos->tabS.TypeEntite,"Chaine") !=0) return -1;
 				                        break; 
 				              default : return -1;
@@ -214,7 +216,7 @@
                                                   }
 
 
-//insere la taille des variable et des tableau dans ma table des symboles
+//insere la' taille des variable et des tableau dans ma table des symboles
 int insererTailleTab(char entite[],char taille[])
 	{
 		TS *pos = recherche(entite);
@@ -341,6 +343,13 @@ void savOPR(char entite[])
 	    qopr->svt = ropr;
 	    qopr = ropr;
 	}
+}
+
+void insererVal(char entite[],char val[])
+{
+	TS *pos = recherche(entite);
+	if(strcmp(pos->tabS.CodeEntite,"idf_tab")!=0)
+		strcpy(pos->tabS.valeur,val);
 }
 
 //verifie si l'affectation est valide ou non
@@ -561,9 +570,3 @@ int ecritureValide()
 	return 1;
 }
 
-void insererVal(char entite[],char val[])
-{
-	TS *pos = recherche(entite);
-	if(strcmp(pos->tabS.CodeEntite,"idf_tab")!=0)
-		strcpy(pos->tabS.valeur,val);
-}
