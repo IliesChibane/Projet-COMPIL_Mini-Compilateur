@@ -39,7 +39,7 @@ HEADER_CLASS: MODIFICATEUR mc_class idf_v{ if(doubleDeclaration($3)==0)
 ;
 MODIFICATEUR: mc_public
               |mc_private
-		          |mc_protected
+		      |mc_protected
               |{ strcpy($$, "");}
 ; 
 CORPS:LISTE_DEC LISTE_INST
@@ -82,7 +82,7 @@ VAL: nb {
 
   sprintf(tempVal,"%d",$1);
    $$ = tempVal;
-  sprintf(express, "%d", $1); sauvegardeTypeExpression("Entier",express);
+  /*sprintf(express, "%d", $1);*/ sauvegardeTypeExpression("Entier",tempVal);
 }
      |chaine {
   sprintf(tempVal,"%s",$1);
@@ -92,7 +92,7 @@ VAL: nb {
      |reel {
     sprintf(tempVal,"%.3f",$1);
      $$ = tempVal;
-    sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",express);
+    /*sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );*/  sauvegardeTypeExpression("Reel",tempVal);
 }
 ;
 DEC_VAR: TYPE LISTE_IDF pvg
@@ -215,8 +215,8 @@ IDF_NB: IDF_NBB
 
 ;
 IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
-         |nb {sprintf(express, "%d", $1); sauvegardeTypeExpression("Entier",express);}
-         |reel {sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );  sauvegardeTypeExpression("Reel",express);}
+         |nb {sprintf(express, "%d", $1); /*printf("%s\n",express);*/ sauvegardeTypeExpression("Entier",express);}
+         |reel {/*sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );*/sprintf(tempVal,"%.3f",$1); sauvegardeTypeExpression("Reel",tempVal);}
          |chaine { sauvegardeTypeExpression("Chaine",$1); }
 ; 
 OPR: pls {savOPR($1); 

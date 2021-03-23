@@ -1577,7 +1577,7 @@ yyreduce:
 
   sprintf(tempVal,"%d",(yyvsp[(1) - (1)].entier));
    (yyval.chaine) = tempVal;
-  sprintf(express, "%d", (yyvsp[(1) - (1)].entier)); sauvegardeTypeExpression("Entier",express);
+  /*sprintf(express, "%d", $1);*/ sauvegardeTypeExpression("Entier",tempVal);
 ;}
     break;
 
@@ -1599,7 +1599,7 @@ yyreduce:
     {
     sprintf(tempVal,"%.3f",(yyvsp[(1) - (1)].floa));
      (yyval.chaine) = tempVal;
-    sprintf(express,"%d.%02u", (int) (yyvsp[(1) - (1)].floa), (int) (((yyvsp[(1) - (1)].floa) - (int) (yyvsp[(1) - (1)].floa) ) * 100) );  sauvegardeTypeExpression("Reel",express);
+    /*sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );*/  sauvegardeTypeExpression("Reel",tempVal);
 ;}
     break;
 
@@ -1783,14 +1783,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 218 "synt.y"
-    {sprintf(express, "%d", (yyvsp[(1) - (1)].entier)); sauvegardeTypeExpression("Entier",express);;}
+    {sprintf(express, "%d", (yyvsp[(1) - (1)].entier)); /*printf("%s\n",express);*/ sauvegardeTypeExpression("Entier",express);;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
 #line 219 "synt.y"
-    {sprintf(express,"%d.%02u", (int) (yyvsp[(1) - (1)].floa), (int) (((yyvsp[(1) - (1)].floa) - (int) (yyvsp[(1) - (1)].floa) ) * 100) );  sauvegardeTypeExpression("Reel",express);;}
+    {/*sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );*/sprintf(tempVal,"%.3f",(yyvsp[(1) - (1)].floa)); sauvegardeTypeExpression("Reel",tempVal);;}
     break;
 
   case 57:

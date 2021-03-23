@@ -404,7 +404,19 @@ int VerifAffection(char entite[])
 					}
 					else if(strcmp(pos2->tabS.TypeEntite,"Reel")==0)
 					{
-						ar=ar+atoi(pos2->tabS.valeur);
+						if(opr!=NULL){
+							if(strcmp(opr->o,"*")==0)
+								ar=ar*atoi(pos2->tabS.valeur);
+							else if(strcmp(opr->o,"+")==0)
+								ar=ar+atoi(pos2->tabS.valeur);
+							else if(strcmp(opr->o,"-")==0)
+								ar=ar-atoi(pos2->tabS.valeur);
+							else
+								ar=ar/atoi(pos2->tabS.valeur);
+						}else
+						{
+							ar=ar+atoi(pos2->tabS.valeur);
+						}
 					}
 					else
 					{
@@ -448,7 +460,21 @@ int VerifAffection(char entite[])
 					}
 					else if(strcmp(e->te,"Reel")==0)
 					{
-						ar=ar+atoi(e->ve);
+						if(opr!=NULL){
+							if(strcmp(opr->o,"*")==0)
+								ar=ar*atoi(e->ve);
+							else if(strcmp(opr->o,"+")==0)
+								ar=ar+atoi(e->ve);
+							else if(strcmp(opr->o,"-")==0)
+								ar=ar-atoi(e->ve);
+							else if(strcmp(opr->o,"/")==0)
+							{
+								ar=ar/atoi(e->ve);
+							}
+						}else
+						{
+							ar=ar+atoi(e->ve);
+						}
 					}
 					else
 					{
