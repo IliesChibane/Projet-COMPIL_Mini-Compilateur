@@ -211,6 +211,7 @@ Affectation: tabID aft Expression pvg { if(doubleDeclaration($1)==0)
 Expression: IDF_NB OPR Expression 
             |IDF_NB
             |IDF_NB divise nb {savOPR($2); 
+                                sprintf(express, "%d", $3);  sauvegardeTypeExpression("Entier",express);
                                if(VerifBib("ISIL.lang")==-1)
                                 printf("Erreur Semantique: La ligne %d , position %d , bibliotheque ISIL.lang non declare\n ",nb_ligne,nb_colonnes);}
 ;
