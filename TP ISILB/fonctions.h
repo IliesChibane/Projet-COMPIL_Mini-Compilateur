@@ -232,9 +232,11 @@ int insererTailleTab(char entite[],char taille[])
 				if(pos->tabS.taille==0)
 				{
 					
-					pos->tabS.taille = t;
+					if(t!=0){pos->tabS.taille = t;
 
-					return 1;
+					return 1;}
+					else
+						return-3;
 				}else{
 					if(pos->tabS.taille<=t)
 						return -1;
@@ -247,13 +249,15 @@ int insererTailleTab(char entite[],char taille[])
 			if(strcmp(pos1->tabS.TypeEntite,"Reel")==0)
 				return-2;
 			int t = atoi(pos1->tabS.valeur);
+
 			if(pos!=NULL){
 				if(pos->tabS.taille==0)
 				{
-					
-					pos->tabS.taille = t;
+					if(t!=0){pos->tabS.taille = t;
 
-					return 1;
+					return 1;}
+					else
+						return-3;
 				}else{
 					if(pos->tabS.taille<=t)
 						return -1;

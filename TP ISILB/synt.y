@@ -151,8 +151,11 @@ Idf_tab: idf_tab br_ov nb br_fr{ if($3 < 0)
                                   else
                                   {
                                     sprintf(taille, "%d", $3);
-                                    if(insererTailleTab($1,taille)==-1)
+                                    int V = insererTailleTab($1,taille);
+                                    if(V==-1)
                                       printf("Erreur Semantique, depassement de la taille du tableau %s a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
+                                    else if(V==-3)
+                                      printf("Erreur Semantique, la taille du tableau %s ne peut pas etre egale a 0 a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
                                   }              
 }
                                  |idf_tab br_ov tabID br_fr {int V =insererTailleTab($1,$3); 
@@ -160,6 +163,8 @@ Idf_tab: idf_tab br_ov nb br_fr{ if($3 < 0)
                                                                 printf("Erreur Semantique, depassement de la taille du tableau %s a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
                                                               else if(V==-2)
                                                                 printf("Erreur Syntaxique: La ligne %d , position %d, syntax error \n ",nb_ligne,nb_colonnes);
+                                                              else if(V==-3)
+                                                                printf("Erreur Semantique, la taille du tableau %s ne peut pas etre egale a 0 a la ligne %d, position  %d\n",$1,nb_ligne,nb_colonnes);
                                                               }
 ;
 tabID: Idf_tab 
@@ -215,7 +220,7 @@ IDF_NB: IDF_NBB
 
 ;
 IDF_NBB: idf_v {sauvegardeTypeExpression($1," ");}
-         |nb {sprintf(express, "%d", $1); /*printf("%s\n",express);*/ sauvegardeTypeExpression("Entier",express);}
+         |nb {sprintf(express, "%d", $1);  sauvegardeTypeExpression("Entier",express);}
          |reel {/*sprintf(express,"%d.%02u", (int) $1, (int) (($1 - (int) $1 ) * 100) );*/sprintf(tempVal,"%.3f",$1); sauvegardeTypeExpression("Reel",tempVal);}
          |chaine { sauvegardeTypeExpression("Chaine",$1); }
 ; 

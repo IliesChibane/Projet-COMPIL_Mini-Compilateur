@@ -4,7 +4,7 @@ public class $ISIL_B {
 Entier $x,$z,$a,$k,$t,$w,$dd,$r,$Entier,$double,$double;
 Reel $y:=5.2;
 Chaine $c,$ch,$sh;
-Entier @tab[5], @tab2[3], @tab3[(-2)];
+Entier @tab[5], @tab2[3], @tab3[(-2)],@tab4[0];
 CONST Entier $p := 6;
 CONST Chaine $tt := "yttttt";
 CONST Reel $yr := 99.013;
